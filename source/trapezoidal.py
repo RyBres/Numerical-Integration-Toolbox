@@ -1,14 +1,14 @@
-from typing import Union
+from typing import Union, Callable
 from sympy import Expr
 import numpy as np
 from sympy.utilities.lambdify import lambdify
 import sympy
 
-def trapezoidal(expr: sympy.Expr, a: Union[int, float], b: Union[int, float]) -> float:
+def trapezoidal(expr: Union[sympy.Expr, Callable[[float], float]], a: Union[int, float], b: Union[int, float]) -> float:
     '''Trapezoidal integral approximation.
         
         Parameters:
-            expr (sympy.Expr): A SymPy expression, f(x)
+            expr (sympy.Expr | Callable[[float], float]): A SymPy expression or lambda expression
             a (int | float): The lower limit of integration
             b (int | float): The upper limit of integration
             
@@ -23,12 +23,19 @@ def trapezoidal(expr: sympy.Expr, a: Union[int, float], b: Union[int, float]) ->
     if a > b:
         raise InvalidIntervalException("The upper limit 'a' must be greater than the lower limit 'b'.")
     
+    # Ensure the expression is evaluated as lambda
+    if isinstance(expr, sympy.Expr):
+        f = lambdify(sympy.symbols('x'), expr, modules=['numpy'])
+    elif callable(expr):
+        f = expr
+    else:
+        raise TypeError("'expr' must be either a sympy or lambda expression.")
+    
     # Get step size
     h = (b - a)
     
     # Define array of x values and compute yi at xi
     xarr = [a, b]
-    f = lambdify(sympy.symbols('x'), expr, modules=['numpy'])
     yarr = f(xarr)
     
     # Compute approximation I with Trapezoidal approximation formula

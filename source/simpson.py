@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Callable
 from sympy import Expr
 import numpy as np
 from sympy.utilities.lambdify import lambdify

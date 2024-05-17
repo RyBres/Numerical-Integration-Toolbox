@@ -1,14 +1,14 @@
-from typing import Union
+from typing import Union, Callable
 from sympy import Expr
 import numpy as np
 from sympy.utilities.lambdify import lambdify
 import sympy
 
-def trapezoidal(expr: sympy.Expr, a: Union[int, float], b: Union[int, float]) -> float:
-    '''Trapezoidal integral approximation.
+def midpoint(expr: Union[sympy.Expr, Callable[[float], float]], a: Union[int, float], b: Union[int, float]) -> float:
+    '''Midpoint integral approximation.
         
         Parameters:
-            expr (sympy.Expr): A SymPy expression, f(x)
+            expr (sympy.Expr | Callable[[float], float]): A SymPy expression or lambda expression
             a (int | float): The lower limit of integration
             b (int | float): The upper limit of integration
             
@@ -23,13 +23,19 @@ def trapezoidal(expr: sympy.Expr, a: Union[int, float], b: Union[int, float]) ->
     if a > b:
         raise InvalidIntervalException("The upper limit 'a' must be greater than the lower limit 'b'.")
     
+    # Ensure the expression is evaluated as lambda
+    if isinstance(expr, sympy.Expr):
+        f = lambdify(sympy.symbols('x'), expr, modules=['numpy'])
+    elif callable(expr):
+        f = expr
+    else:
+        raise TypeError("'expr' must be either a sympy or lambda expression.")
+    
     # Get step size and midpoint
     h = (b - a)
     c = (a + b) / 2 # this midpoint value is arbitrarily named c - literature typically doesn't name it 'c'
     
-    f = lambdify(sympy.symbols('x'), expr, modules=['numpy'])
-    
-    # Compute approximation I with Trapezoidal approximation formula
+    # Compute approximation I with Midpoint approximation formula
     M = h * f(c)
 
     return M
