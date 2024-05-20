@@ -4,7 +4,7 @@ import numpy as np
 from sympy.utilities.lambdify import lambdify
 import sympy
 
-def composite_simpson(expr: Union[sympy.Expr, Callable[[float], float]], a: Union[int, float], b: Union[int, float], n: int) -> float:
+def composite_simpson(f: sympy.Expr | Callable[[float], float], a: Union[int, float], b: Union[int, float], n: int) -> float:
     '''Composite Simpson's integral approximation.
         
         Parameters:
@@ -16,6 +16,8 @@ def composite_simpson(expr: Union[sympy.Expr, Callable[[float], float]], a: Unio
         Returns:
             I (float): Floating point approximation of the integral
             
+        Author:
+            Ryan Bresnahan
     '''
     
     class InvalidIntervalException(Exception):
@@ -29,12 +31,8 @@ def composite_simpson(expr: Union[sympy.Expr, Callable[[float], float]], a: Unio
         raise InvalidIntervalException("The upper limit 'b' must be greater than the lower limit 'a'.")
     
     # Ensure the expression is evaluated as lambda
-    if isinstance(expr, sympy.Expr):
-        f = lambdify(sympy.symbols('x'), expr, modules=['numpy'])
-    elif callable(expr):
-        f = expr
-    else:
-        raise TypeError("'expr' must be either a sympy or lambda expression.")
+    if isinstance(f, sympy.Expr):
+        f = lambdify(sympy.symbols('x'), f, modules=['numpy'])
         
     # Get step size
     h = (b - a) / n
