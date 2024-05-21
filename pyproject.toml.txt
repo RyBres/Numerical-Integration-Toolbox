@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "NumericalIntegrationToolbox"
+version = "0.1.0"
+description = "A collection of numerical integration methods"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Ryan Bresnahan", email = "bresnahanr18@gmail.com"}
+]
+keywords = ["numpy", "sympy", "numerical_integration"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "numpy",
+    "sympy",
+    "typing"
+]
+
+[project.urls]
+Repository = "https://github.com/RyBres/Numerical-Integration-Toolbox"
+
+[tool.setuptools.packages.find]
+where = ["source"]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = [
+    "tests",
+]

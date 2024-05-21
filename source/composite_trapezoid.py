@@ -4,7 +4,7 @@ import numpy as np
 from sympy.utilities.lambdify import lambdify
 import sympy
 
-def composite_trapezoid(expr: Union[sympy.Expr, Callable[[float], float]], a: Union[int, float], b: Union[int, float], n: int) -> float:
+def composite_trapezoid(f: sympy.Expr | Callable[[float], float], a: Union[int, float], b: Union[int, float], n: int) -> float:
     '''Composite Trapezoid integral approximation.
         
         Parameters:
@@ -15,7 +15,9 @@ def composite_trapezoid(expr: Union[sympy.Expr, Callable[[float], float]], a: Un
             
         Returns:
             I (float): Floating point approximation of the integral
-            
+                        
+        Author:
+            Ryan Bresnahan
     '''
 
     class InvalidIntervalException(Exception):
@@ -29,12 +31,8 @@ def composite_trapezoid(expr: Union[sympy.Expr, Callable[[float], float]], a: Un
         raise InvalidIntervalException("The upper limit 'a' must be greater than the lower limit 'b'.")
         
     # Ensure the expression is evaluated as lambda
-    if isinstance(expr, sympy.Expr):
-        f = lambdify(sympy.symbols('x'), expr, modules=['numpy'])
-    elif callable(expr):
-        f = expr
-    else:
-        raise TypeError("'expr' must be either a sympy or lambda expression.")
+    if isinstance(f, sympy.Expr):
+        f = lambdify(sympy.symbols('x'), f, modules=['numpy'])
     
     # Get step size
     h = (b - a) / (n - 1)

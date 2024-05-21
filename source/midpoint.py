@@ -4,7 +4,7 @@ import numpy as np
 from sympy.utilities.lambdify import lambdify
 import sympy
 
-def midpoint(expr: Union[sympy.Expr, Callable[[float], float]], a: Union[int, float], b: Union[int, float]) -> float:
+def midpoint(f: sympy.Expr | Callable[[float], float], a: Union[int, float], b: Union[int, float]) -> float:
     '''Midpoint integral approximation.
         
         Parameters:
@@ -14,7 +14,9 @@ def midpoint(expr: Union[sympy.Expr, Callable[[float], float]], a: Union[int, fl
             
         Returns:
             M (float): Floating point approximation of the integral
-            
+                        
+        Author:
+            Ryan Bresnahan
     '''
     class InvalidIntervalException(Exception):
         "Raised when the upper limit is less than the lower limit."
@@ -24,12 +26,8 @@ def midpoint(expr: Union[sympy.Expr, Callable[[float], float]], a: Union[int, fl
         raise InvalidIntervalException("The upper limit 'a' must be greater than the lower limit 'b'.")
     
     # Ensure the expression is evaluated as lambda
-    if isinstance(expr, sympy.Expr):
-        f = lambdify(sympy.symbols('x'), expr, modules=['numpy'])
-    elif callable(expr):
-        f = expr
-    else:
-        raise TypeError("'expr' must be either a sympy or lambda expression.")
+    if isinstance(f, sympy.Expr):
+        f = lambdify(sympy.symbols('x'), f, modules=['numpy'])
     
     # Get step size and midpoint
     h = (b - a)

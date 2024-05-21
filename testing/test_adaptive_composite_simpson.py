@@ -1,8 +1,9 @@
 import unittest
+from sympy import Expr
 import sympy
 import numpy as np
 
-from adapt_composite_simpson import adaptive_composite_simpson  # Replace 'your_module' with the actual module name
+from adaptive_composite_simpson import adaptive_composite_simpson
 
 class TestAdaptiveCompositeSimpson(unittest.TestCase):
     

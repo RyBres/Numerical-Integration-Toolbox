@@ -1,4 +1,4 @@
-from typing import Union, Callable
+from typing import Callable
 from sympy import Expr
 import numpy as np
 from sympy.utilities.lambdify import lambdify
@@ -7,7 +7,7 @@ import sympy
 from composite_trapezoid import composite_trapezoid
 
 
-def romberg(expr: sympy.Expr, a: int | float, b: int | float, n: int) -> float:
+def romberg(f: sympy.Expr | Callable[[float], float], a: int | float, b: int | float, n: int) -> float:
     '''Romberg's integral approximation. Requires composite_trapezoid function.
         
         Parameters:
@@ -31,12 +31,16 @@ def romberg(expr: sympy.Expr, a: int | float, b: int | float, n: int) -> float:
         
     if a > b:
         raise InvalidIntervalException("The upper limit 'a' must be greater than the lower limit 'b'.")
+        
+    # Ensure the expression is evaluated as lambda
+    if isinstance(f, sympy.Expr):
+        f = lambdify(sympy.symbols('x'), f, modules=['numpy'])
     
     rarr = np.zeros((n, n)) # Initialize array to store Romberg approx
 
     for i in range(n): # Obtain first col estimates
         m = 2**i + 1
-        rarr[i, 0] = composite_trapezoid(expr, a, b, m)
+        rarr[i, 0] = composite_trapezoid(f, a, b, m)
         
     for j in range(1, n): # Extrapolation across matrix
         for k in range(j, n):

@@ -6,7 +6,7 @@ import sympy
 
 from composite_simpson import composite_simpson
     
-def adaptive_composite_simpson(f: sympy.Expr | Callable[[float], float], a: float, b: float, tol: float, n_initial: int = 10) -> float:
+def adaptive_composite_simpson(f: sympy.Expr | Callable[[float], float], a: float, b: float, tol: float, n: int = 10) -> float:
     '''Composite Simpson's adaptive integral approximation. Requires composite_simpson function.
         
         Parameters:
@@ -14,7 +14,7 @@ def adaptive_composite_simpson(f: sympy.Expr | Callable[[float], float], a: floa
             a (int | float): The lower limit of integration
             b (int | float): The upper limit of integration
             tol (int | float): The desired tolerance of the approximation
-            n_initial (int): Number of iterations for initial approximation. Default is set to 10, but may be changed.
+            n_initial (int = 10): Number of iterations for initial approximation. Default is 10.
             
         Returns:
             I (float): Floating point approximation of the integral
@@ -23,14 +23,14 @@ def adaptive_composite_simpson(f: sympy.Expr | Callable[[float], float], a: floa
             Ryan Bresnahan
     '''
     
-    def _adapt_composite_simpson_inner(f: sympy.Expr | Callable[[float], float], a: int | float, b: int | float, tol: float, int_input: float) -> float:
+    def _adapt_composite_simpson_inner(f: sympy.Expr | Callable[[float], float], a: int | float, b: int | float, tol: float, int_input: float, n: int) -> float:
         '''Inner function that is used for the recursion in adaptive_composite_simpson.
         '''
-        # Implement composite simpson's at n = 2
+        # Evaluate left and right integrals at midpoint c
         c = (a + b) / 2
         
-        left_int = composite_simpson(f, a, c, 2)
-        right_int= composite_simpson(f, c, b, 2)
+        left_int = composite_simpson(f, a, c, n)
+        right_int= composite_simpson(f, c, b, n)
         whole_int = left_int + right_int
         delta = whole_int - int_input
         
@@ -47,7 +47,7 @@ def adaptive_composite_simpson(f: sympy.Expr | Callable[[float], float], a: floa
         "Raised when the upper limit is less than the lower limit."
         pass
     
-    if n_initial % 2 != 0 or not isinstance(n_initial, int):
+    if n % 2 != 0 or not isinstance(n, int):
         raise ValueError("'n_initial' must be an even integer.")
         
     if a > b:
@@ -57,7 +57,7 @@ def adaptive_composite_simpson(f: sympy.Expr | Callable[[float], float], a: floa
     if isinstance(f, sympy.Expr):
         f = lambdify(sympy.symbols('x'), f, modules=['numpy'])
     
-    int_input = composite_simpson(f, a, b, n_initial)
+    int_input = composite_simpson(f, a, b, n) # Note that n_initial is conceptually different from the n that is typically used in the integration functions - the n will exceed n_initial if there is recursion (and hence more intervals)
     
     return _adapt_composite_simpson_inner(f, a, b, tol, int_input)
         
