@@ -4,7 +4,7 @@ import numpy as np
 from sympy.utilities.lambdify import lambdify
 import sympy
 
-from composite_simpson import composite_simpson
+from source.composite_simpson import composite_simpson
     
 def adaptive_composite_simpson(f: sympy.Expr | Callable[[float], float], a: float, b: float, tol: float, n: int = 10) -> float:
     '''Composite Simpson's adaptive integral approximation. Requires composite_simpson function.
@@ -39,8 +39,8 @@ def adaptive_composite_simpson(f: sympy.Expr | Callable[[float], float], a: floa
             return whole_int + delta / 15
         else:
             tol /= 2
-            left_res = _adapt_composite_simpson_inner(f, a, c, tol, left_int)
-            right_res = _adapt_composite_simpson_inner(f, c, b, tol, right_int)
+            left_res = _adapt_composite_simpson_inner(f, a, c, tol, left_int, n)
+            right_res = _adapt_composite_simpson_inner(f, c, b, tol, right_int, n)
             return left_res + right_res
     
     class InvalidIntervalException(Exception):
@@ -59,5 +59,5 @@ def adaptive_composite_simpson(f: sympy.Expr | Callable[[float], float], a: floa
     
     int_input = composite_simpson(f, a, b, n) # Note that n_initial is conceptually different from the n that is typically used in the integration functions - the n will exceed n_initial if there is recursion (and hence more intervals)
     
-    return _adapt_composite_simpson_inner(f, a, b, tol, int_input)
+    return _adapt_composite_simpson_inner(f, a, b, tol, int_input, n)
         

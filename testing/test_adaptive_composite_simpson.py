@@ -1,9 +1,10 @@
 import unittest
-from sympy import Expr
-import sympy
-import numpy as np
 
-from adaptive_composite_simpson import adaptive_composite_simpson
+import numpy as np
+import sympy
+
+from source.adaptive_composite_simpson import adaptive_composite_simpson
+
 
 class TestAdaptiveCompositeSimpson(unittest.TestCase):
     
@@ -13,8 +14,8 @@ class TestAdaptiveCompositeSimpson(unittest.TestCase):
         a = 0
         b = 1
         tol = 1e-6
-        n_initial = 2 # may be changed to whatever - is accurate at low n
-        result = adaptive_composite_simpson(f, a, b, tol, n_initial)
+        n = 2 # may be changed to whatever - is accurate at low n
+        result = adaptive_composite_simpson(f, a, b, tol, n)
         expected = 1/3  # Integral of x^2 from 0 to 1 is 1/3
         self.assertAlmostEqual(result, expected, delta=tol)
     
@@ -24,7 +25,8 @@ class TestAdaptiveCompositeSimpson(unittest.TestCase):
         a = 0
         b = np.pi
         tol = 1e-6
-        result = adaptive_composite_simpson(f, a, b, tol)
+        n = 4
+        result = adaptive_composite_simpson(f, a, b, tol, n)
         expected = 2  # Integral of sin(x) from 0 to pi is 2
         self.assertAlmostEqual(result, expected, delta=tol)
     
@@ -34,7 +36,8 @@ class TestAdaptiveCompositeSimpson(unittest.TestCase):
         a = 0
         b = 1
         tol = 1e-6
-        result = adaptive_composite_simpson(f, a, b, tol)
+        n = 6
+        result = adaptive_composite_simpson(f, a, b, tol, n)
         expected = np.e - 1  # Integral of e^x from 0 to 1 is e - 1
         self.assertAlmostEqual(result, expected, delta=tol)
 
