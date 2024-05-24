@@ -9,15 +9,18 @@ from numpy.polynomial import Polynomial, Legendre
 
 def legendre(f: sympy.Expr | Callable[[float], float], a: int | float, b: int | float, n: int):
 
-    # Find roots/weights w/ np
+    # Find roots/weights w/ np. Could add in an approx routine with Newton's method on Chebyshev nodes
+    
 
-    h = (a - b) / 2
+    h = (a - b) / 2 # outer constant of integral
 
     for i in range(n):
-        x = 0.5 * ((b - a)*t + (b + a))**2
+        # t is the root for that index
+        x = (0.5 * ((b - a)*t + (b + a))**2) * h # is ~x
+        # substitute ~x into f(x)
         prod = weight * f(x)
-        # add to array
+        # add to array showing elements of summation
 
-    # sum array times outer product
+    # sum array times outer product (which is h)
 
 
