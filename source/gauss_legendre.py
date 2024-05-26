@@ -40,10 +40,10 @@ def gauss_legendre(f: sympy.Expr | Callable[[float], float], a: int | float, b: 
 
     for i in range(n):
         x = 0.5 * ((b - a) * nodes[i] + (b + a))  # is ~x centered on -1 to 1
-        px = weights[i] * f(x)**2
+        px = weights[i] * f(x)
         px_arr.append(px)
 
     # Sum the elements of array times the jacobian factor, producing answer
-    I = sum(px_arr) * (a - b) * 0.5
+    I = sum(px_arr) * (b - a) * 0.5
 
     return I
